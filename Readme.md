@@ -25,12 +25,3 @@ You can explore the live version of the frontend here: [FitMe UI](https://fitmeu
 - **State Management**: React Hooks (useState, useEffect)
 - **Build & Deployment**: Netlify (Frontend), Heroku (Backend)
 
-### Installation
-
-To run this project locally:
-
-#### 1. **Clone the repository**:
-```bash
-git clone https://github.com/yourusername/fitme.git
-cd fitme
-npm install
