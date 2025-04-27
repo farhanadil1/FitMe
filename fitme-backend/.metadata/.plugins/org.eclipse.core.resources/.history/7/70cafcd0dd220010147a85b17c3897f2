@@ -1,0 +1,5 @@
+package com.fitme.backend.service;
+
+public class UserDetailsService {
+
+}

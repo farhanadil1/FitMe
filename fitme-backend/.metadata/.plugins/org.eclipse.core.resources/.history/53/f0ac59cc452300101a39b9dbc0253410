@@ -1,0 +1,53 @@
+package com.fitme.backend.config;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
+
+@Component
+public class JwtUtil {
+
+    private final String SECRET_KEY = "8f9sdf9sdf9sdf9sdf9sdf9sdf9sdf9sdf"; // Use a secure, random key
+    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
+    // Generate a JWT token with the given username
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours expiry
+                .signWith(key)
+                .compact();
+    }
+
+    // Extract the username from the JWT token
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    // Validate if the token is still valid for the given user details
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    // Check if the token has expired
+    private boolean isTokenExpired(String token) {
+        return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    // Extract all claims (like username, expiration) from the token
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder() // Use parserBuilder for the latest version
+                .setSigningKey(key) // Set the secret key for verification
+                .build() // Build the parser
+                .parseClaimsJws(token) // Parse the JWT token and return the claims
+                .getBody(); // Extract claims from the JWT body
+    }
+}

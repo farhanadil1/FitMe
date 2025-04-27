@@ -1,0 +1,149 @@
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { ImSpinner2 } from 'react-icons/im';
+import axios from 'axios';
+
+const Login = ({ show, onClose, switchToSignup }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  if (!show) return null;
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    // Early validation for empty fields
+    if (!email || !password) {
+      toast.error('Please enter both email and password');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const response = await axios.post("http://localhost:8053/api/auth/login", {
+        email,
+        password,
+      });
+
+      // Handle success: Store the token in localStorage
+      const { token } = response.data;
+      localStorage.setItem("accessToken", token);
+
+      // Optionally redirect to another page after successful login
+      window.location.href = "/"; 
+
+      // Show success toast
+      toast.success('Login successful!');
+      setLoading(false);
+      onClose();  // Close the login modal
+
+    } catch (error) {
+      // Handle error response
+      setLoading(false);
+      
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error || 'Login failed. Please try again.');
+      } else {
+        toast.error('An error occurred. Please try again.');
+      }
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 backdrop-blur-md bg-black bg-opacity-30"
+        onClick={onClose}
+      ></div> 
+
+      {/* Login Box */}
+      <div className="relative z-50 bg-white dark:bg-gray-900 text-gray-800 dark:text-white rounded-xl shadow-lg w-[90%] max-w-sm p-6">
+        <h2 className="text-2xl font-bold mb-5 text-center">
+          Login to <span className="text-emerald-500">FitMe</span>
+        </h2>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          {/* Email Input */}
+          <div>
+            <label className="block text-base mb-1 font-medium">Email Address</label>
+            <input
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              className="w-full text-base p-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Password Input */}
+          <div>
+            <label className="block text-base mb-1 font-medium">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="••••••••"
+                className="w-full text-base p-3 pr-10 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-300"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 rounded-lg transition flex justify-center items-center"
+            disabled={loading}
+          >
+            {loading ? <ImSpinner2 className="animate-spin text-lg" /> : 'Login'}
+          </button>
+        </form>
+
+        {/* Extra Links */}
+        <div className="mt-4 text-base text-center space-y-2">
+          <button
+            onClick={() => toast.info('Forgot password feature coming soon!')}
+            className="text-emerald-500 hover:underline"
+          >
+            Forgot password?
+          </button>
+          <div className="text-gray-600 dark:text-gray-400">
+            Don’t have an account?{' '}
+            <button
+              onClick={switchToSignup}
+              className="text-emerald-500 hover:underline"
+            >
+              Sign up
+            </button>
+          </div>
+        </div>
+
+        {/* Cancel Button */}
+        <button
+          onClick={onClose}
+          className="mt-4 text-base text-gray-400 hover:underline w-full"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
