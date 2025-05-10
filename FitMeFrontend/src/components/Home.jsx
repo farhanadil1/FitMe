@@ -6,13 +6,12 @@ import Footer from './Footer';
 import Review from './Review';
 import Coache from './Coach';
 import HeroSection from './HeroSection';
-import PageLoader from './PageLoader'; // 💥 NEW
+import PageLoader from './PageLoader';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const Home = () => {
-  const [loading, setLoading] = useState(true); // 💥 NEW
-
+  const [loading, setLoading] = useState(true); 
   useEffect(() => {
     AOS.init({
       duration: 800, // animation duration
@@ -21,30 +20,30 @@ const Home = () => {
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // 2 seconds fake loading
+    }, 1000); // 2 seconds fake loading
 
     return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
-    return <PageLoader />; // 💥 Show loading first
+    return <PageLoader />; 
   }
 
   return (
     <div className="space-y-10 p-6">
-      <section id="home" data-aos="fade-up">
+      <section  data-aos="fade-up">
         <HeroSection />
       </section>
 
-      <section id="workouts" data-aos="fade-right">
+      <section  data-aos="fade-right">
         <WorkoutTracker />
       </section>
 
-      <section id="nutrition" data-aos="fade-left">
+      <section  data-aos="fade-left">
         <MealLogger />
       </section>
 
-      <section id="progress" data-aos="zoom-in-up">
+      <section  data-aos="zoom-in-up">
         <ProgressAnalytics />
       </section>
 

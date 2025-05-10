@@ -1,0 +1,73 @@
+package com.fitme.backend.services;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.fitme.backend.models.Workouts;
+import com.fitme.backend.repositories.IWorkoutsRepository;
+
+@Service
+public class WorkoutsService implements IWorkoutsService {
+
+    @Autowired
+    IWorkoutsRepository workoutRepository;
+
+    @Override
+    public Workouts createWorkout(Workouts workout) {
+        // Save and return the workout object
+        return workoutRepository.save(workout);
+    }
+
+    @Override
+    public Workouts updateWorkout(Workouts workout) {
+        // Update and return the workout object
+        return workoutRepository.save(workout);
+    }
+
+    @Override
+    public String deleteWorkout(Workouts workout) {
+        // Delete the workout object
+        workoutRepository.delete(workout);
+        return "Workout deleted successfully";
+    }
+
+    @Override
+    public String deleteWorkout(int id) {
+        // Find the workout by ID
+        Optional<Workouts> w = workoutRepository.findById(id);
+        if (w.isPresent()) {
+            // Delete the found workout
+            workoutRepository.delete(w.get());
+            return "Workout deleted successfully";
+        }
+        // Return error message if workout is not found
+        return "Workout not found with ID: " + id;
+    }
+
+    @Override
+    public Workouts getWorkoutById(int id) {
+        // Find and return the workout by ID, throw exception if not found
+        Optional<Workouts> workout = workoutRepository.findById(id);
+        if (workout.isPresent()) {
+            return workout.get();
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Workout not found with ID: " + id);
+    }
+
+    @Override
+    public List<Workouts> getAllWorkouts() {
+        // Return the list of all workouts
+        return workoutRepository.findAll();
+    }
+
+    @Override
+    public List<Workouts> getWorkoutsByUserId(int userid) {
+        // Find and return all workouts for a specific user
+        return workoutRepository.findByUserUserid(userid);
+    }
+}

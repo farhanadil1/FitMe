@@ -1,0 +1,52 @@
+package com.fitme.backend.controllers;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.fitme.backend.models.Workouts;
+import com.fitme.backend.services.IWorkoutsService;
+import com.fitme.backend.services.WorkoutService;
+
+@RestController
+@RequestMapping("api/workout/")
+public class WorkoutsController {
+
+    @Autowired
+    IWorkoutsService workoutService;
+
+    @GetMapping("{id}")
+    public Workouts getWorkoutById(@PathVariable("id") int id) {
+        return workoutService.getWorkoutById(id);
+    }
+
+    @GetMapping("user/{userid}")
+    public List<Workouts> getWorkoutsByUser(@PathVariable("userid") int userid) {
+        return workoutService.getWorkoutsByUserId(userid);
+    }
+
+    @GetMapping("/")
+    public List<Workouts> getAllWorkouts() {
+        return workoutService.getAllWorkouts();
+    }
+
+    @PostMapping("create")
+    public Workouts createWorkout(@RequestBody Workouts workout) {
+        return workoutService.createWorkout(workout);
+    }
+
+    @PutMapping("edit")
+    public Workouts updateWorkout(@RequestBody Workouts workout) {
+        return workoutService.updateWorkout(workout);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteWorkout(@PathVariable("id") int id) {
+    	System.out.println("Deleting workout with ID: " + id);
+        String result = workoutService.deleteWorkout(id);
+        return ResponseEntity.ok(result);
+    }
+
+}
+

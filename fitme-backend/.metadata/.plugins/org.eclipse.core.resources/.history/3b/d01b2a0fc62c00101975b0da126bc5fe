@@ -1,0 +1,79 @@
+package com.fitme.backend.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fitme.backend.model.User;
+import com.fitme.backend.repository.IUserRepository;
+@Service
+public class UserService implements IUserService {
+
+//add the dependency
+	@Autowired
+	IUserRepository usersrepository;
+	@Override
+	public User createUser(User user) {
+		// TODO Auto-generated method stub
+		return usersrepository.save(user);
+	}
+
+	@Override
+	public User updateUsers(User user) {
+		// TODO Auto-generated method stub
+		return usersrepository.save(user);
+	}
+
+	@Override
+	public String deleteUsers(Users user) {
+		// TODO Auto-generated method stub
+		usersrepository.delete(user);
+		return "User is deleted Successfully";
+	}
+
+	@Override
+	public String deleteUsers(int id) {
+		// TODO Auto-generated method stub
+	Optional<Users> u=	usersrepository.findById(id);
+	//check the object is found or not
+	Users user=null;
+	if(u.isPresent())
+	{
+		//get the user object
+		user=u.get();
+	//delete the user object
+	usersrepository.delete(user);
+	return "User is deleted Successfully";
+		
+	}
+	return "User is not found with ID:"+ id;
+	}
+	@Override
+	public Users getUserById(int id) {
+		// TODO Auto-generated method stub
+		return (Users)usersrepository.findById(id).get();
+	}
+
+	@Override
+	public List<Users> getAll() {
+		// TODO Auto-generated method stub
+		return usersrepository.findAll();
+	}
+
+	@Override
+	public Users validateUsers(String emailid, String password) {
+		// TODO Auto-generated method stub
+		Users user=usersrepository.findByEmailid(emailid);
+		if(user!=null)
+		{
+			if(user.getPassword().equals(password))
+			{
+				return user;
+			}
+		}
+		return null;
+	}
+
+}

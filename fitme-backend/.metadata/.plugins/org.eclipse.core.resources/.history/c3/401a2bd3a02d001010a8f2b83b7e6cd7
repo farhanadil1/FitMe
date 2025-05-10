@@ -1,0 +1,52 @@
+package com.fitme.backend.controllers;
+
+import com.fitme.backend.models.Meals;
+import com.fitme.backend.services.MealsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/meals")
+public class MealsController {
+
+    @Autowired
+    private MealsService mealsService;
+
+    @PostMapping("/add")
+    public Meals addMeal(@RequestBody Meals meal) {
+        return mealsService.saveMeal(meal);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Meals> getMealsByUser(@PathVariable int userId) {
+        return mealsService.getAllMealsByUserId(userId);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public void deleteMeal(@PathVariable int id) {
+        mealsService.deleteMeal(id);
+    }
+
+    @PutMapping("/update/{id}")
+    public Meals updateMeal(@PathVariable int id, @RequestBody Meals meal) {
+        meal.setMid(id);
+        return mealsService.updateMeal(meal);
+    }
+
+
+    @GetMapping("/{id}")
+    public Meals getMealById(@PathVariable int id) {
+        return mealsService.getMealById(id);
+    }
+
+    @GetMapping("/totalCalories/{userid}")
+    public ResponseEntity<Integer> getTotalCaloriesByUser(@PathVariable int userid) {
+        int total = mealsService.getTotalCaloriesByUserId(userid);
+        return ResponseEntity.ok(total);
+    }
+
+
+}

@@ -1,5 +1,0 @@
-package com.fitme.backend.repository;
-
-public interface UserReository {
-
-}

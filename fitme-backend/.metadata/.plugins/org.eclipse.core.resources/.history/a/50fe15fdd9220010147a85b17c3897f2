@@ -1,5 +1,0 @@
-package com.fitme.backend.config;
-
-public class JwtUtil {
-
-}

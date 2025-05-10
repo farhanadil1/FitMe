@@ -1,0 +1,82 @@
+package com.fitme.backend.services;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fitme.backend.models.Users;
+import com.fitme.backend.models.Workouts;
+import com.fitme.backend.repositories.IUsersrepository;
+import com.fitme.backend.repositories.IWorkoutsRepository;
+
+@Service
+public class WorkoutsService implements IWorkoutsService {
+
+    @Autowired
+    IWorkoutsRepository workoutRepository;
+
+    @Autowired
+    IUsersrepository usersRepository;
+
+    @Override
+    public Workouts createWorkout(Workouts workout) {
+        if (workout == null || workout.getUser() == null) {
+            throw new IllegalArgumentException("Workout or User cannot be null");
+        }
+
+        int userId = workout.getUser().getUserid();
+        Users user = usersRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for ID: " + userId);
+        }
+
+        workout.setUser(user); // Ensure that the user is properly set
+        return workoutRepository.save(workout);
+    }
+
+
+    @Override
+    public Workouts updateWorkout(Workouts workout) {
+        int userId = workout.getUser().getUserid();
+        Users user = usersRepository.findById(userId).orElse(null);
+
+        if (user == null) return null;
+
+        workout.setUser(user);
+        return workoutRepository.save(workout);
+    }
+
+    @Override
+    public String deleteWorkout(Workouts workout) {
+        workoutRepository.delete(workout);
+        return "Workout deleted";
+    }
+
+    @Override
+    public String deleteWorkout(int id) {
+        Optional<Workouts> workout = workoutRepository.findById(id);
+        if (workout.isPresent()) {
+            workoutRepository.delete(workout.get());
+            return "Workout deleted";
+        }
+        return "Workout not found";
+    }
+
+    @Override
+    public Workouts getWorkoutById(int id) {
+        return workoutRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Workouts> getAllWorkouts() {
+        return workoutRepository.findAll();
+    }
+
+    @Override
+    public List<Workouts> getWorkoutsByUserId(int userId) {
+        return workoutRepository.findByUserUserid(userId);
+    }
+}

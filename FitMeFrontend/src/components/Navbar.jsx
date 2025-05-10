@@ -9,6 +9,14 @@ const Navbar = ({ onLoginClick }) => {
   const [activeSection, setActiveSection] = useState('home');
   const [dropdownOpen, setDropdownOpen] = useState(false); // New state for dropdown
   const location = useLocation();
+  const[user,setUser]=useState(false);
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsed = JSON.parse(storedUser);
+          setUser(parsed);
+        }
+      }, []);
 
   // Handle theme
   useEffect(() => {
@@ -54,15 +62,12 @@ const Navbar = ({ onLoginClick }) => {
     { name: 'Workouts', path: '/workouts' , sectionId: 'workouts' },
     { name: 'Nutrition', path: '/nutrition', sectionId: 'nutrition' },
     { name: 'Progress', path: '/progress', sectionId: 'progress' },
-    { name: 'Community', path: '/community' },
-    { name: 'Level Up', path: '/levelup' },
+    { name: 'Community', path: '/community' }
   ];
 
-  // Handle sign-out and clear access token
   const handleSignOut = () => {
-    localStorage.removeItem('accessToken');
-    // You can also redirect user after logout if needed
-    window.location.reload();
+    localStorage.removeItem('user');
+    window.location.href=('/');
   };
 
   return (
@@ -107,14 +112,14 @@ const Navbar = ({ onLoginClick }) => {
           {isDarkMode ? <FiSun /> : <FiMoon />}
         </button>
 
-        {localStorage.getItem('accessToken') ? (
+        {localStorage.getItem('user') ? (
           <div className="relative">
             <button
               className="flex items-center gap-2 text-gray-600 dark:text-gray-300"
               onClick={() => setDropdownOpen(!dropdownOpen)} // Toggle dropdown on click
             >
               <FiUser className="text-xl" />
-              <span className="text-sm">User</span>
+              <span className="text-sm">{user.name}</span>
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md">
@@ -158,14 +163,14 @@ const Navbar = ({ onLoginClick }) => {
           <button onClick={toggleTheme} className="text-xl text-gray-600 dark:text-gray-300 hover:text-emerald-500 transition">
             {isDarkMode ? <FiSun /> : <FiMoon />}
           </button>
-          {localStorage.getItem('accessToken') ? (
+          {localStorage.getItem('user') ? (
             <div className="relative">
               <button
                 className="flex items-center gap-2 text-gray-600 dark:text-gray-300"
                 onClick={() => setDropdownOpen(!dropdownOpen)} // Toggle dropdown on click
               >
                 <FiUser className="text-xl" />
-                <span className="text-sm">User</span>
+                <span className="text-sm">{user.name}</span>
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 shadow-lg rounded-md">

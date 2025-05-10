@@ -1,0 +1,5 @@
+package com.fitme.backend.reposatories;
+
+public interface IWorkoutRepository {
+
+}

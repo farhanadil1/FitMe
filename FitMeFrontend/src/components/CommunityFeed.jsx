@@ -2,83 +2,60 @@ import React, { useState, useEffect } from 'react';
 import { FiImage, FiMessageSquare, FiGithub, FiTwitter, FiHeart } from 'react-icons/fi';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { formatDistanceToNow } from 'date-fns';
+import AuthModal from '../components/AuthModal';
+import K from '../assets/kieani.jpg';
+import D from '../assets/a2.jpeg';
+import A from '../assets/a3.webp';
+import { useNavigate } from 'react-router-dom';
 
 const CommunityFeed = () => {
   const initialPosts = [
+    
+    
+    
     {
-      id: 1,
-      content: "Just finished an intense leg day workout! 💪🔥",
-      media: null,
-      timestamp: new Date(Date.now() - 3600 * 1000),
-      likes: 1287,
-      user: {
-        name: 'kunal_pookie',
-        avatar: 'https://i.pravatar.cc/101',
-      },
-    },
-    {
-      id: 2,
-      content: "Meal prepped for the week! 🥗🍗",
-      media: 'https://images.unsplash.com/photo-1551218808-94e220e084d2',
+      id: 8,
+      content: "Doing workout outdoors is a different level of motivation!",
+      media: K,
       timestamp: new Date(Date.now() - 7200 * 1000),
-      likes: 874,
+      likes: 45874,
       user: {
-        name: 'its_sarfaraz',
+        name: 'keiani',
         avatar: 'https://i.pravatar.cc/102',
       },
     },
     {
-      id: 3,
-      content: "Lost 2 kg in 2 weeks by staying consistent and motivated! 🏋️‍♂️",
-      media: null,
-      timestamp: new Date(Date.now() - 86400 * 1000),
-      likes: 456,
+      id: 9,
+      content: "Keeping my body hydrated is my top priority!",
+      media: D,
+      timestamp: new Date(Date.now() - 7200 * 1000),
+      likes: 65874,
       user: {
-        name: 'Tanmkaykyuvraj',
-        avatar: 'https://i.pravatar.cc/103',
+        name: 'davidlaid',
+        avatar: 'https://i.pravatar.cc/102',
       },
     },
     {
-      id: 4,
-      content: "Nothing as good as lifting irons, call me Iron Man 💪",
+      id: 10,
+      content: "Hello everyone! I am new to this community and looking forward to share my fitness journey with you all!",
+      media: A,
       timestamp: new Date(Date.now() - 7200 * 1000),
-      likes: 374,
+      likes: 50874,
       user: {
-        name: 'xizt',
-        avatar: 'https://i.pravatar.cc/104',
-      },
-    },
-    {
-      id: 5,
-      content: "Jhukte nahi, sirf uthte hain!",
-      timestamp: new Date(Date.now() - 7200 * 1000),
-      likes: 790,
-      user: {
-        name: 'debendarchoudhary',
-        avatar: 'https://i.pravatar.cc/105',
-      },
-    },
-    {
-      id: 6,
-      content: "Food is fuel! 🍽️",
-      timestamp: new Date(Date.now() - 7200 * 1000),
-      likes: 290,
-      user: {
-        name: 'callmeanurag',
-        avatar: 'https://i.pravatar.cc/106',
-      },
-    },
-    {
-      id: 7,
-      content: "It's about 1 month of my fitness journey and I am loving it!",
-      timestamp: new Date(Date.now() - 7200 * 1000),
-      likes: 690,
-      user: {
-        name: 'Bhadaniji',
-        avatar: 'https://i.pravatar.cc/107',
+        name: 'annabel.lucinda',
+        avatar: 'https://i.pravatar.cc/102',
       },
     },
   ];
+ 
+  const[user,setUser]=useState(false);
+  useEffect(() => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        setUser(parsed);
+      }
+    }, []);
 
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ content: '', media: null });
@@ -89,6 +66,17 @@ const CommunityFeed = () => {
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [following, setFollowing] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [showAuthModal, setShowAuthModal] = useState(false); // Auth modal state
+  const navigate = useNavigate();
+
+  useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user"));
+      console.log("User:", user);  // Check if the 'user' object is valid
+  console.log("User ID:", user ? user.userid : "User is null");
+      if (!user) {
+        setShowAuthModal(true); // Show the modal if user is not logged in
+      }
+    }, [navigate]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -123,7 +111,7 @@ const CommunityFeed = () => {
       timestamp: new Date(),
       likes: 0,
       user: {
-        name: 'farhanadil',
+        name: user.name,
         avatar: 'https://i.pravatar.cc/100',
       },
     };
@@ -173,8 +161,18 @@ const CommunityFeed = () => {
 
     setReplyInputs((prev) => ({ ...prev, [postId]: '' }));
   };
+  const closeAuthModal = () => {
+    setShowAuthModal(false);
+    window.location.reload();
+  };
 
   return (
+    <> {showAuthModal && (
+        <AuthModal
+          showLoginInitially={true} // Show login tab initially
+          onClose={closeAuthModal} // Close modal and redirect
+        />
+      )}
     <div className="p-6 max-w-3xl mx-auto animate-fadeIn">
       <h2 className="text-4xl font-bold mb-8 text-center text-emerald-600 dark:text-emerald-400">
         Community Feed
@@ -337,6 +335,7 @@ const CommunityFeed = () => {
         <p className="text-xs mt-1">&copy; {new Date().getFullYear()} FitMe. All rights reserved.</p>
       </footer>
     </div>
+    </>
   );
 };
 

@@ -1,0 +1,5 @@
+package com.fitme.backend.models;
+
+public class Reply {
+
+}

@@ -3,52 +3,65 @@ import { toast } from 'react-toastify';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { ImSpinner2 } from 'react-icons/im';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import AlreadyRegisteredModal from './AlreadyRegisteredModal'; 
+import {createUsers} from '../components/services/UsersService'; 
 
 const Signup = ({ show, onClose, switchToLogin }) => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [emailid, setEmailid] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showAlreadyRegisteredModal, setShowAlreadyRegisteredModal] = useState(false);
+  const [errortxt, setErrortxt] = useState('');
+
+  const navigate = useNavigate();
 
   if (!show) return null;
 
+
   const handleSignup = async (e) => {
     e.preventDefault();
-
-    if (!name || !email || !password) {
+  
+    if (!name || !emailid || !password) {
       toast.error('All fields are required!');
       return;
     }
-
+  
     setLoading(true);
-
+    const user = { name, emailid, password };
+  
     try {
-      const response = await axios.post('http://localhost:8053/api/auth/register', {
-        fullName: name,
-        email,
-        password,
-      }, {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-      });
-
+      const response = await createUsers(user);
+  
       if (response.status === 200) {
-        toast.success('Signup successful!');
-        setLoading(false);
-        onClose();
-      }
-    } catch (error) {
-      setLoading(false);
-      if (error.response && error.response.status === 409) {
-        setShowAlreadyRegisteredModal(true); // Open the AlreadyRegisteredModal
+        toast.success('Sign up successful! Please log in.');
+        onClose();         // Close signup modal
+        switchToLogin();   // Open login modal
       } else {
-        toast.error(error.response?.data?.message || 'Signup failed. Please try again.');
+        setErrortxt('Something went wrong, please try again!');
+      }
+    } catch (err) {
+      console.error('Signup error:', err);
+  
+      if (err.response && err.response.status === 403) {
+        // Duplicate email error
+        setErrortxt('User with this email already exists. Please log in.');
+        setShowAlreadyRegisteredModal(true); 
+      } else {
+        setErrortxt('Unable to reach server or unknown error occurred.');
+        setShowAlreadyRegisteredModal(true);
       }
     }
+  
+    setLoading(false);
+
+  
+  
+   
   };
+  
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -61,10 +74,10 @@ const Signup = ({ show, onClose, switchToLogin }) => {
 
         <form onSubmit={handleSignup} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1 font-medium">Full Name</label>
+            <label className="block text-sm mb-1 font-medium">User Name</label>
             <input
               type="text"
-              placeholder="Your Name"
+              placeholder="username e.g, farhanadil"
               className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -78,8 +91,8 @@ const Signup = ({ show, onClose, switchToLogin }) => {
               type="email"
               placeholder="you@example.com"
               className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailid}
+              onChange={(e) => setEmailid(e.target.value)}
               required
             />
           </div>
@@ -127,17 +140,16 @@ const Signup = ({ show, onClose, switchToLogin }) => {
         <button onClick={onClose} className="mt-4 text-sm text-gray-400 hover:underline w-full">
           Cancel
         </button>
-        {showAlreadyRegisteredModal && (
-  <AlreadyRegisteredModal
-    onClose={() => setShowAlreadyRegisteredModal(false)}
-    switchToLogin={() => {
-      onClose();    
-      switchToLogin();
-    }}
-  />
-)}
 
-        
+        {showAlreadyRegisteredModal && (
+          <AlreadyRegisteredModal
+            onClose={() => setShowAlreadyRegisteredModal(false)}
+            switchToLogin={() => {
+              onClose();    
+              switchToLogin();
+            }}
+          />
+        )}
       </div>
     </div>
   );

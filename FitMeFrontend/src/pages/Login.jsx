@@ -1,57 +1,60 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import React, { useState, useContext } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { ImSpinner2 } from 'react-icons/im';
-import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { userLogin } from '../components/services/UsersService';
+
+
 
 const Login = ({ show, onClose, switchToSignup }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  if (!show) return null;
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [showPassword, setShowPassword] = useState(false);
+const [loading, setLoading] = useState(false);
+const navigate = useNavigate();
+const { login } = useContext(AuthContext);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+if (!show) return null;
 
-    // Early validation for empty fields
-    if (!email || !password) {
-      toast.error('Please enter both email and password');
-      return;
-    }
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-    setLoading(true);
-    
-    try {
-      const response = await axios.post("http://localhost:8053/api/auth/login", {
-        email,
-        password,
-      });
+  if (!email || !password) {
+    toast.error("Please enter both email and password");
+    return;
+  }
 
-      // Handle success: Store the token in localStorage
-      const { token } = response.data;
-      localStorage.setItem("accessToken", token);
+  setLoading(true);
 
-      // Optionally redirect to another page after successful login
-      window.location.href = "/"; 
+  try {
+    const response = await userLogin(email, password);
 
-      // Show success toast
-      toast.success('Login successful!');
-      setLoading(false);
-      onClose();  // Close the login modal
+    if (response.status === 200) {
+      const user = response.data;
+      window.location.reload();
 
-    } catch (error) {
-      // Handle error response
-      setLoading(false);
-      
-      if (error.response && error.response.data) {
-        toast.error(error.response.data.error || 'Login failed. Please try again.');
+      if (!user) {
+        toast.error("Invalid username or password");
       } else {
-        toast.error('An error occurred. Please try again.');
+        localStorage.setItem("user", JSON.stringify(user));
+        login(user); // context login
+        toast.success("Login successful!");
+        onClose();
+        navigate("/", { replace: true });
       }
+    } else {
+      toast.error("Invalid username or password");
     }
-  };
+  } catch (error) {
+    console.error("Login error:", error);
+    toast.error("Something went wrong. Please try again.");
+  }
+
+  setLoading(false);
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -136,11 +139,14 @@ const Login = ({ show, onClose, switchToSignup }) => {
 
         {/* Cancel Button */}
         <button
-          onClick={onClose}
-          className="mt-4 text-base text-gray-400 hover:underline w-full"
-        >
-          Cancel
-        </button>
+          onClick={() => {
+          onClose();
+          window.location.href=('/');
+          }}
+           className="mt-4 text-base text-gray-400 hover:underline w-full"
+          >
+  Cancel
+</button>
       </div>
     </div>
   );

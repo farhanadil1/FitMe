@@ -1,0 +1,67 @@
+package com.fitme.backend.services;
+
+import com.fitme.backend.models.Meals;
+import com.fitme.backend.models.Users;
+import com.fitme.backend.models.Workouts;
+import com.fitme.backend.repositories.IMealsRepository;
+import com.fitme.backend.repositories.IUsersrepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class MealsService implements IMealsService {
+
+    @Autowired
+    private IMealsRepository mealsRepository;
+
+    @Autowired
+    IUsersrepository usersRepository;
+
+    @Override
+    public Meals saveMeal(Meals meal) {
+        return mealsRepository.save(meal);
+    }
+
+    @Override
+    public List<Meals> getAllMealsByUserId(int userId) {
+        return mealsRepository.findByUserUserid(userId);
+    }
+
+    @Override
+    public void deleteMeal(int id) {
+        mealsRepository.deleteById(id);
+    }
+
+    @Override
+    public Meals updateMeal(Meals updatedMeal) {
+        Meals existingMeal = mealsRepository.findById(updatedMeal.getMid()).orElse(null);
+
+        if (existingMeal == null) {
+            return null; // Or throw an exception if preferred
+        }
+
+        // Update fields
+        existingMeal.setMealName(updatedMeal.getMealName());
+        existingMeal.setCalories(updatedMeal.getCalories());
+        existingMeal.setProtiens(updatedMeal.getProtiens());
+        existingMeal.setCarbs(updatedMeal.getCarbs());
+        existingMeal.setFats(updatedMeal.getFats());
+
+        // Re-attach user if needed
+        Users user = usersRepository.findById(updatedMeal.getUser().getUserid()).orElse(null);
+        if (user != null) {
+            existingMeal.setUser(user);
+        }
+
+        return mealsRepository.save(existingMeal);
+    }
+
+
+    @Override
+    public Meals getMealById(int id) {
+        return mealsRepository.findById(id).orElse(null);
+    }
+}

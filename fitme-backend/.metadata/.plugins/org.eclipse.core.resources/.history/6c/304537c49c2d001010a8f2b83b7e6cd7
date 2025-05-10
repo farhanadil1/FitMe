@@ -1,0 +1,41 @@
+package com.fitme.backend.services;
+
+import com.fitme.backend.models.*;
+import com.fitme.backend.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class PostsService {
+
+    @Autowired private IPostRepository postRepository;
+    @Autowired private IUsersrepository usersRepository;
+
+    public List<Posts> getAllPosts() {
+        return postRepository.findAll();
+    }
+
+    public Posts createPost(String content, String mediaUrl, int userId) {
+        Users user = postRepository.findById(userId).orElseThrow();
+        Posts post = new Posts();
+        return postRepository.save(post);
+    }
+
+    public void likePost(Long postId) {
+        Posts post = postRepository.findById(postId).orElseThrow();
+        post.setLikes(post.getLikes() + 1);
+        postRepository.save(post);
+    }
+
+    public void unlikePost(Long postId) {
+        Posts post = postRepository.findById(postId).orElseThrow();
+        post.setLikes(Math.max(0, post.getLikes() - 1));
+        postRepository.save(post);
+    }
+    @Override
+    public void deletePost(long postId) {
+        postRepository.deleteById(postId);
+    }
+}

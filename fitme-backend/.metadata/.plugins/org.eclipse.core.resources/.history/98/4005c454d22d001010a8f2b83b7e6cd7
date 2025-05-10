@@ -1,0 +1,29 @@
+package com.fitme.backend.services;
+
+import com.fitme.backend.models.*;
+import com.fitme.backend.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+
+@Service
+public class ReplyService {
+
+    @Autowired private IPostRepository postRepository;
+    @Autowired private IReplyRepository replyRepository;
+    @Autowired private IUsersrepository usersRepository;
+    
+    public Reply addReply(Long postId, String content, int userId) {
+        Posts post = postRepository.findById(postId).orElseThrow();
+        Users user = usersRepository.findById(userId).orElseThrow();
+        Reply reply = new Reply();
+        reply.setPost(post);
+        reply.setUser(user);
+        reply.setContent(content);
+        reply.setTimestamp(LocalDateTime.now());
+        return replyRepository.save(reply);
+    }
+    public void deleteReply(long id) {
+    	replyRepository.deleteById(id);
+    }
+}

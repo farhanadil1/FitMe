@@ -1,0 +1,99 @@
+package com.fitme.backend.models;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "posts")
+public class Posts {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private Long id;
+    @Column(name="content", length=200)
+    private String content;
+    @Column(name="mediaUrl", length=100)
+    private String mediaUrl;
+    @Column(name="timestamp", length=50)
+    private LocalDateTime timestamp;
+    @Column(name="likes", length=1000)
+    private int likes;
+
+    @ManyToOne
+    @JoinColumn(name = "userid", nullable = false)
+    private Users user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Reply> replies = new ArrayList<>();
+
+	public Posts(String content, String mediaUrl, LocalDateTime timestamp, int likes, Users user, List<Reply> replies) {
+		super();
+		this.content = content;
+		this.mediaUrl = mediaUrl;
+		this.timestamp = timestamp;
+		this.likes = likes;
+		this.user = user;
+		this.replies = replies;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getMediaUrl() {
+		return mediaUrl;
+	}
+
+	public void setMediaUrl(String mediaUrl) {
+		this.mediaUrl = mediaUrl;
+	}
+
+	public LocalDateTime getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public int getLikes() {
+		return likes;
+	}
+
+	public void setLikes(int likes) {
+		this.likes = likes;
+	}
+
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	public List<Reply> getReplies() {
+		return replies;
+	}
+
+	public void setReplies(List<Reply> replies) {
+		this.replies = replies;
+	}
+    
+    
+}

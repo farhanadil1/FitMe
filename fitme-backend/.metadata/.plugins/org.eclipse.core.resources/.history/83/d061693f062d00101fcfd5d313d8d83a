@@ -1,0 +1,43 @@
+package com.fitme.backend.services;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fitme.backend.models.Workouts;
+import com.fitme.backend.repositories.WorkoutRepository;
+
+@Service
+public class WorkoutService {
+
+    @Autowired
+    WorkoutRepository workoutRepo;
+
+    public Workouts getWorkoutById(int id) {
+        return workoutRepo.findById(id).orElse(null);
+    }
+
+    public List<Workouts> getWorkoutsByUserId(int userid) {
+        return workoutRepo.findByUserUserid(userid);
+    }
+
+    public List<Workouts> getAllWorkouts() {
+        return workoutRepo.findAll();
+    }
+
+    public Workouts saveWorkout(Workouts workout) {
+        return workoutRepo.save(workout);
+    }
+
+    public Workouts updateWorkout(Workouts workout) {
+        return workoutRepo.save(workout);
+    }
+
+    public String deleteWorkout(int id) {
+        if (workoutRepo.existsById(id)) {
+            workoutRepo.deleteById(id);
+            return "Workout deleted";
+        }
+        return "Workout not found";
+    }
+}

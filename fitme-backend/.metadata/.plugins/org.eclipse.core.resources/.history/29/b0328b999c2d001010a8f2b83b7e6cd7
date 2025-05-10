@@ -1,0 +1,10 @@
+package com.fitme.backend.repositories;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.fitme.backend.models.Posts;
+
+public interface IPostRepository extends JpaRepository<Posts, Long> {
+
+	Optional<Posts> findById(int userId);}

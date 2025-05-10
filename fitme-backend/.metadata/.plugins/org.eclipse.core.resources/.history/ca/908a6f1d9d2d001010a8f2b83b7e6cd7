@@ -1,0 +1,60 @@
+package com.fitme.backend.services;
+
+import com.fitme.backend.models.Meals;
+import com.fitme.backend.models.Users;
+import com.fitme.backend.models.Workouts;
+import com.fitme.backend.repositories.IMealsRepository;
+import com.fitme.backend.repositories.IUsersrepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class MealsService implements IMealsService {
+
+    @Autowired
+    private IMealsRepository mealsRepository;
+
+    @Autowired
+    IUsersrepository usersRepository;
+
+    @Override
+    public Meals saveMeal(Meals meal) {
+        return mealsRepository.save(meal);
+    }
+
+    @Override
+    public List<Meals> getAllMealsByUserId(int userId) {
+        return mealsRepository.findByUserUserid(userId);
+    }
+
+    @Override
+    public void deleteMeal(int id) {
+        mealsRepository.deleteById(id);
+    }
+
+    @Override
+    public Meals updateMeal(Meals meal) {
+        int userId = meal.getUser().getUserid();
+        Users user = usersRepository.findById(userId).orElse(null);
+
+        if (user == null) return null;
+
+        meal.setUser(user);
+        return mealsRepository.save(meal);
+    }
+
+
+    @Override
+    public Meals getMealById(int id) {
+        return mealsRepository.findById(id).orElse(null);
+    }
+    public int getTotalCaloriesByUserId(int userId) {
+        List<Meals> meals = mealsRepository.findByUserUserid(userId);
+        return meals.stream()
+                    .mapToInt(Meals::getCalories)
+                    .sum();
+    }
+}

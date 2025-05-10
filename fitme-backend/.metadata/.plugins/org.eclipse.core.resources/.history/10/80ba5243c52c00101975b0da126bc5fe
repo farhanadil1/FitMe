@@ -1,0 +1,11 @@
+package com.fitme.backend.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.fitme.backend.model.User;
+@Repository
+public interface IUserrepository extends JpaRepository<User, Integer> {
+
+public	User findByEmailid(String emailid);
+}

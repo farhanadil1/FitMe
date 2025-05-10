@@ -1,0 +1,35 @@
+package com.fitme.backend.services;
+
+import com.fitme.backend.models.Meals;
+import com.fitme.backend.repositories.IMealsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class MealsService {
+
+    @Autowired
+    private IMealsRepository mealsRepository;
+
+    public Meals saveMeal(Meals meal) {
+        return mealsRepository.save(meal);
+    }
+
+    public List<Meals> getAllMealsByUserId(int userId) {
+        return mealsRepository.findByUserUserid(userId);
+    }
+
+    public void deleteMeal(int id) {
+        mealsRepository.deleteById(id);
+    }
+
+    public Meals updateMeal(Meals meal) {
+        return mealsRepository.save(meal);
+    }
+
+    public Meals getMealById(int id) {
+        return mealsRepository.findById(id).orElse(null);
+    }
+}

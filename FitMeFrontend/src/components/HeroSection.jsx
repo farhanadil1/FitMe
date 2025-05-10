@@ -22,7 +22,7 @@ const HeroSection = () => {
         {/* Left Content */}
         <div className="max-w-xl space-y-6 text-left animate-slideInLeft">
           <h1 className="text-4xl md:text-5xl font-extrabold text-emerald-400 leading-tight">
-            Transform Your Body, <br /> Transform Your Life 💪
+            Transform Your Body, <br /> Transform Your Life 
           </h1>
           <p className="text-lg md:text-xl text-gray-200">
             Track workouts, log meals, get expert tips, and stay motivated with your FitMe community.
