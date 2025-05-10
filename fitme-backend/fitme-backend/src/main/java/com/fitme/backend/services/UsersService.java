@@ -30,13 +30,13 @@ public class UsersService implements IUsersService {
 
 	@Override
 	public Users updateUsers(Users user) {
-		// TODO Auto-generated method stub
+		
 		return usersrepository.save(user);
 	}
 
 	@Override
 	public String deleteUsers(Users user) {
-		// TODO Auto-generated method stub
+		
 		usersrepository.delete(user);
 		return "User is deleted Successfully";
 	}
@@ -59,13 +59,11 @@ public class UsersService implements IUsersService {
 	}
 	@Override
 	public Users getUserById(int id) {
-		// TODO Auto-generated method stub
 		return (Users)usersrepository.findById(id).get();
 	}
 
 	@Override
 	public List<Users> getAll() {
-		// TODO Auto-generated method stub
 		return usersrepository.findAll();
 	}
 
