@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fitme.backend.models.Workouts;
 import com.fitme.backend.services.IWorkoutsService;
-import com.fitme.backend.services.WorkoutService;
+import com.fitme.backend.services.WorkoutsService;
 
 @RestController
 @RequestMapping("api/workout/")

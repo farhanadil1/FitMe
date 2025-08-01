@@ -33,7 +33,7 @@ public class WorkoutsService implements IWorkoutsService {
             throw new IllegalArgumentException("User not found for ID: " + userId);
         }
 
-        workout.setUser(user); // Ensure that the user is properly set
+        workout.setUser(user); 
         return workoutRepository.save(workout);
     }
 
