@@ -17,7 +17,10 @@ import com.fitme.backend.models.Users;
 import com.fitme.backend.services.IUsersService;
 
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = {
+    "http://localhost:5173", 
+    "https://fitmeui.netlify.app/"
+}, allowCredentials = "true")
 
 
 @RestController

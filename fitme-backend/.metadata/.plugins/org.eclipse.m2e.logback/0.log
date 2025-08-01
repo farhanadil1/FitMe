@@ -1695,3 +1695,4 @@ Caused by: org.apache.maven.model.building.ModelBuildingException: 1 problem was
 	at org.apache.maven.model.building.DefaultModelBuilder.build(DefaultModelBuilder.java:248)
 	at org.apache.maven.project.DefaultProjectBuilder.build(DefaultProjectBuilder.java:176)
 	... 37 common frames omitted
+2025-08-02 01:43:14,656 [Worker-2: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
