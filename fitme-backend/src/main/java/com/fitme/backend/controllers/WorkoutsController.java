@@ -4,10 +4,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fitme.backend.models.Workouts;
 import com.fitme.backend.services.IWorkoutsService;
 import com.fitme.backend.services.WorkoutsService;
+
+@CrossOrigin(origins = {
+    "http://localhost:5173", 
+    "https://fitmeui.netlify.app/"
+}, allowCredentials = "true")
 
 @RestController
 @RequestMapping("api/workout/")

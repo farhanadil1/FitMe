@@ -6,8 +6,15 @@ import com.fitme.backend.services.MealsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 
 import java.util.List;
+
+@CrossOrigin(origins = {
+    "http://localhost:5173", 
+    "https://fitmeui.netlify.app/"
+}, allowCredentials = "true")
 
 @RestController
 @RequestMapping("/api/meals")
